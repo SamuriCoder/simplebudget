@@ -149,6 +149,7 @@ struct HomeView: View {
             .navigationTitle("Budget")
             .sheet(isPresented: $showingTransactionForm) {
                 TransactionFormView(budgetStore: budgetStore, transactionType: transactionType)
+                    .id(transactionType)
             }
         }
     }

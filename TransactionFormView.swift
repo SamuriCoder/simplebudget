@@ -65,4 +65,4 @@ struct TransactionFormView: View {
         budgetStore.addTransaction(amount: amountDouble, reason: reason, type: type, category: finalCategory)
         dismiss()
     }
-} 
+}

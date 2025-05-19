@@ -8,7 +8,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Monthly Allowance")) {
+                Section(header: Text("Weekly Allowance")) {
                     TextField("Amount", text: $allowance)
                         .keyboardType(.decimalPad)
                         .onAppear {
