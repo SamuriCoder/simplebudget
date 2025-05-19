@@ -90,32 +90,46 @@ struct HomeView: View {
                             return result
                         }
 
-                        ForEach(transactionsWithBalance, id: \.0.id) { transaction, balanceAfter in
-                            HStack(alignment: .top) {
-                                Image(systemName: transaction.type == .income ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
-                                    .foregroundColor(transaction.type == .income ? .green : .red)
-
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(transaction.reason)
-                                        .font(.subheadline)
-                                    Text(transaction.date, style: .date)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                Spacer()
-                                VStack(alignment: .trailing, spacing: 2) {
-                                    Text("\(transaction.type == .income ? "+" : "-") $\(String(format: "%.2f", transaction.amount))")
+                        List {
+                            ForEach(transactionsWithBalance, id: \.0.id) { transaction, balanceAfter in
+                                HStack(alignment: .top) {
+                                    Image(systemName: transaction.type == .income ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
                                         .foregroundColor(transaction.type == .income ? .green : .red)
-                                    Text("Balance: $\(String(format: "%.2f", balanceAfter))")
-                                        .font(.caption)
-                                        .italic()
-                                        .foregroundColor(.gray)
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(transaction.reason)
+                                            .font(.subheadline)
+                                        Text(transaction.date, style: .date)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    Spacer()
+                                    VStack(alignment: .trailing, spacing: 2) {
+                                        Text("\(transaction.type == .income ? "+" : "-") $\(String(format: "%.2f", transaction.amount))")
+                                            .foregroundColor(transaction.type == .income ? .green : .red)
+                                        Text("Balance: $\(String(format: "%.2f", balanceAfter))")
+                                            .font(.caption)
+                                            .italic()
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                                .padding()
+                                .background(Color(.systemBackground))
+                                .cornerRadius(8)
+                                .listRowInsets(EdgeInsets())
+                                .listRowBackground(Color.clear)
+                            }
+                            .onDelete { indexSet in
+                                let sortedTransactions = budgetStore.transactions.sorted(by: { $0.date > $1.date })
+                                let transactionsToDelete = indexSet.map { sortedTransactions[$0] }
+                                
+                                for transaction in transactionsToDelete {
+                                    budgetStore.deleteTransaction(id: transaction.id)
                                 }
                             }
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(8)
                         }
+                        .listStyle(PlainListStyle())
+                        .frame(height: CGFloat(transactionsWithBalance.count * 100))
                     }
                     .padding(.horizontal)
 
